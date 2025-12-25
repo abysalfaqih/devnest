@@ -13,12 +13,22 @@ export const MESSAGES = {
         CHANNEL_NOT_FOUND: 'Channel verifikasi tidak ditemukan!',
         BOT_NO_PERMISSION: 'Bot tidak memiliki permission!',
         BOT_ROLE_POSITION: 'Role bot harus lebih tinggi!',
+        
+        // Ticket Errors
+        TICKET_CREATION_FAILED: 'Gagal membuat ticket!',
+        TICKET_CHANNEL_NOT_FOUND: 'Channel ticket tidak ditemukan!',
+        TICKET_CATEGORY_NOT_FOUND: 'Category ticket tidak ditemukan!',
+        TICKET_ALREADY_EXISTS: 'Anda sudah memiliki ticket yang aktif!',
     },
 
     SUCCESS: {
         VERIFICATION_COMPLETE: (roleName) => `Berhasil diverifikasi sebagai ${roleName}!`,
         ALREADY_VERIFIED: 'Anda sudah terverifikasi!',
         SETUP_COMPLETE: (channel) => `Embed verifikasi berhasil dikirim ke ${channel}!`,
+        
+        // Ticket Success
+        PANEL_TICKET_SETUP: (channel) => `Panel ticket berhasil dikirim ke ${channel}!`,
+        TICKET_CREATED: (channel) => `Ticket berhasil dibuat! ${channel}`,
     },
 
     PERMISSION: {
@@ -33,11 +43,28 @@ export const MESSAGES = {
         BUTTON_LABEL: 'Verifikasi',
     },
 
+    TICKET: {
+        PANEL_TITLE: 'Devnest Support',
+        PANEL_DESCRIPTION: 'Gunakan ticket untuk melakukan pemesanan (Order). Ticket yang dibuat di luar kategori tersebut tidak akan diproses dan akan ditutup secara otomatis sesuai dengan kebijakan yang berlaku.',
+        BUTTON_LABEL: 'Order Product',
+        
+        MODAL_TITLE: 'Buat Ticket Baru',
+        MODAL_LABEL: 'Kategori apa yang dipilih?',
+        MODAL_PLACEHOLDER: 'Jasa atau Product?',
+        
+        WELCOME_TITLE: 'Ticket Dibuat',
+        WELCOME_DESCRIPTION: (user, category) => `${user} Terima kasih telah membuat ticket!\n\n**Kategori:** ${category}\n\nStaff kami akan segera membantu Anda. Mohon tunggu sebentar.`,
+    },
+
     LOGGER: {
         VERIFICATION_SUCCESS: (userTag) => `${userTag} telah diverifikasi`,
         SETUP_SUCCESS: (channelName, userTag) => `Embed verifikasi berhasil dikirim ke #${channelName} oleh ${userTag}`,
         DEVELOPER_ACCESS: (userTag, commandName) => `Developer ${userTag} mengakses command ${commandName}`,
         ADMIN_ACCESS: (userTag, commandName) => `Admin ${userTag} mengakses command ${commandName}`,
+        
+        // Ticket Logs
+        TICKET_CREATED: (userTag, channelName, category) => `Ticket dibuat oleh ${userTag} (#${channelName}) - Kategori: ${category}`,
+        PANEL_TICKET_SETUP: (channelName, userTag) => `Panel ticket dikirim ke #${channelName} oleh ${userTag}`,
     }
 };
 

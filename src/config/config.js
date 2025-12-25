@@ -9,4 +9,6 @@ export default {
     verificationChannelId: process.env.VERIFICATION_CHANNEL_ID,
     developerId: process.env.DEVELOPER,
     adminRoleId: process.env.ADMIN,
+    ticketChannelId: process.env.TICKET_CHANNEL_ID,
+    ticketCategoryId: process.env.TICKET_CATEGORY_ID,
 };

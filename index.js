@@ -5,6 +5,7 @@ import { loadEvents } from './src/handlers/eventHandler.js';
 import logger from './src/utils/logger.js';
 import shutdownHandler from './src/utils/shutdown.js';
 import rateLimiter from './src/utils/rateLimit.js';
+import ticketManager from './src/utils/ticketManager.js';
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ const requiredEnvVars = [
     'GUILD_ID',
     'VERIFIED_ROLE_ID',
     'VERIFICATION_CHANNEL_ID',
+    'TICKET_CHANNEL_ID',
+    'TICKET_CATEGORY_ID',
     'DEVELOPER',
     'ADMIN'
 ];
@@ -21,7 +24,7 @@ const requiredEnvVars = [
 const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
 if (missingVars.length > 0) {
-    logger.error('❌ Missing env variables:', missingVars.join(', '));
+    logger.error('Missing env variables:', missingVars.join(', '));
     process.exit(1);
 }
 
@@ -35,6 +38,7 @@ const client = new Client({
 
 client.commands = new Collection();
 client.rateLimiter = rateLimiter;
+client.ticketManager = ticketManager;
 
 async function initialize() {
     try {
@@ -44,12 +48,12 @@ async function initialize() {
         shutdownHandler.initialize(client);
         shutdownHandler.registerTask(async () => {
             rateLimiter.clearLimits();
-        }, 'Cleanup');
+        }, 'Cleanup Rate Limiter');
 
         await client.login(process.env.DISCORD_TOKEN);
 
     } catch (error) {
-        logger.error('❌ Initialization failed:', error);
+        logger.error('Initialization failed:', error);
         process.exit(1);
     }
 }

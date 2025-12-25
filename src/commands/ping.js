@@ -25,7 +25,7 @@ export default {
             const rateLimitStats = interaction.client.rateLimiter.getStats();
 
             const embed = new EmbedBuilder()
-                .setColor('#00FF00')
+                .setColor(0x00ff00)
                 .setTitle('🏓 Pong!')
                 .addFields(
                     { 
