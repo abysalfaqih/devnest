@@ -64,6 +64,10 @@ export default {
             if (interaction.customId === 'create_ticket') {
                 await handleTicketButton(interaction);
             }
+
+            if (interaction.customId === 'close_ticket') {
+                await handleCloseTicket(interaction);
+            }
         }
 
         // Handle Modal Submissions
@@ -197,6 +201,37 @@ async function handleTicketModal(interaction) {
         if (interaction.deferred) {
             return await interaction.editReply({
                 content: MESSAGES.ERROR.TICKET_CREATION_FAILED
+            });
+        }
+    }
+}
+
+async function handleCloseTicket(interaction) {
+    try {
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+        const channel = interaction.channel;
+        const user = interaction.user;
+
+        // Konfirmasi penutupan ticket
+        const result = await ticketManager.closeTicket(channel, user);
+
+        if (!result.success) {
+            return await interaction.editReply({
+                content: result.message
+            });
+        }
+
+        return await interaction.editReply({
+            content: result.message
+        });
+
+    } catch (error) {
+        logger.error('Close ticket button error:', error);
+        
+        if (interaction.deferred) {
+            return await interaction.editReply({
+                content: '❌ Terjadi error saat menutup ticket!'
             });
         }
     }

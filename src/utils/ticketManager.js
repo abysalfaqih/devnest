@@ -1,4 +1,4 @@
-import { ChannelType, PermissionFlagsBits, EmbedBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 import config from '../config/config.js';
 import logger from './logger.js';
 import MESSAGES from '../constants/messages.js';
@@ -79,7 +79,7 @@ class TicketManager {
                 createdAt: Date.now()
             });
 
-            // Send welcome message
+            // Send welcome message dengan tombol close
             const welcomeEmbed = new EmbedBuilder()
                 .setColor('#00FF00')
                 .setTitle(MESSAGES.TICKET.WELCOME_TITLE)
@@ -87,9 +87,19 @@ class TicketManager {
                 .setTimestamp()
                 .setFooter({ text: `Ticket ID: ${ticketChannel.id}` });
 
+            const closeButton = new ButtonBuilder()
+                .setCustomId('close_ticket')
+                .setLabel('Close Ticket')
+                .setEmoji('🔒')
+                .setStyle(ButtonStyle.Danger);
+
+            const row = new ActionRowBuilder()
+                .addComponents(closeButton);
+
             await ticketChannel.send({
                 content: `${member}`,
-                embeds: [welcomeEmbed]
+                embeds: [welcomeEmbed],
+                components: [row]
             });
 
             logger.success(MESSAGES.LOGGER.TICKET_CREATED(
@@ -113,8 +123,75 @@ class TicketManager {
         }
     }
 
+    async closeTicket(channel, closedBy) {
+        try {
+            // Verifikasi channel ada di ticket category
+            if (channel.parentId !== config.ticketCategoryId) {
+                return {
+                    success: false,
+                    message: 'Channel ini bukan ticket channel!'
+                };
+            }
+
+            // Cari dan hapus ticket dari Map jika ada
+            let ticketOwnerId = null;
+            for (const [id, ticket] of this.activeTickets.entries()) {
+                if (ticket.channelId === channel.id) {
+                    ticketOwnerId = id;
+                    this.activeTickets.delete(id);
+                    break;
+                }
+            }
+
+            // Send closing message
+            const closeEmbed = new EmbedBuilder()
+                .setColor('#FF0000')
+                .setTitle('Ticket Ditutup')
+                .setDescription(`Ticket ditutup oleh ${closedBy}\nChannel akan dihapus dalam 5 detik...`)
+                .setTimestamp();
+
+            await channel.send({
+                embeds: [closeEmbed]
+            });
+
+            logger.success(`Ticket closed by ${closedBy.tag} (Channel: ${channel.name})`);
+
+            // Delete channel after 5 seconds
+            setTimeout(async () => {
+                try {
+                    await channel.delete();
+                } catch (error) {
+                    logger.error('Error deleting channel:', error);
+                }
+            }, 5000);
+
+            return {
+                success: true,
+                message: 'Ticket berhasil ditutup!'
+            };
+
+        } catch (error) {
+            logger.error('Close ticket error:', error);
+            return {
+                success: false,
+                message: 'Terjadi error saat menutup ticket!'
+            };
+        }
+    }
+
     removeTicket(userId) {
         return this.activeTickets.delete(userId);
+    }
+
+    removeTicketByChannel(channelId) {
+        for (const [userId, ticket] of this.activeTickets.entries()) {
+            if (ticket.channelId === channelId) {
+                this.activeTickets.delete(userId);
+                logger.info(`Ticket data removed for channel: ${channelId}`);
+                return true;
+            }
+        }
+        return false;
     }
 
     getTicketInfo(userId) {
