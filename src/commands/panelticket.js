@@ -14,10 +14,10 @@ export default {
     
     async execute(interaction) {
         try {
-            await showProgress(interaction, true, '⏳ Setting up ticket panel...');
+            await showProgress(interaction, true, 'Setting up ticket panel...');
 
             const embed = new EmbedBuilder()
-                .setColor(0x0099ff)
+                .setColor(0xff6600)
                 .setTitle(MESSAGES.TICKET.PANEL_TITLE)
                 .setDescription(MESSAGES.TICKET.PANEL_DESCRIPTION)
                 .setTimestamp();
@@ -26,7 +26,7 @@ export default {
                 .setCustomId('create_ticket')
                 .setLabel(MESSAGES.TICKET.BUTTON_LABEL)
                 .setEmoji('🛒')
-                .setStyle(ButtonStyle.Primary);
+                .setStyle(ButtonStyle.Success);
 
             const row = new ActionRowBuilder()
                 .addComponents(button);
