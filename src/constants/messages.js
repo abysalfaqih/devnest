@@ -19,6 +19,15 @@ export const MESSAGES = {
         TICKET_CHANNEL_NOT_FOUND: 'Channel ticket tidak ditemukan!',
         TICKET_CATEGORY_NOT_FOUND: 'Category ticket tidak ditemukan!',
         TICKET_ALREADY_EXISTS: 'Anda sudah memiliki ticket yang aktif!',
+
+        // Protected Link Errors
+        LINK_NOT_FOUND: 'Protected link tidak ditemukan!',
+        LINK_CREATION_FAILED: 'Gagal membuat protected link!',
+        LINK_UPDATE_FAILED: 'Gagal mengupdate protected link!',
+        LINK_DELETE_FAILED: 'Gagal menghapus protected link!',
+        INVALID_PASSWORD: '❌ Password salah! Silakan coba lagi.',
+        MESSAGE_NOT_FOUND: 'Message tidak ditemukan di channel!',
+        INVALID_IMAGE_URL: 'URL gambar tidak valid! Pastikan dimulai dengan http:// atau https://',
     },
 
     SUCCESS: {
@@ -29,6 +38,12 @@ export const MESSAGES = {
         // Ticket Success
         PANEL_TICKET_SETUP: (channel) => `Panel ticket berhasil dikirim ke ${channel}!`,
         TICKET_CREATED: (channel) => `Ticket berhasil dibuat! ${channel}`,
+
+        // Protected Link Success
+        LINK_CREATED: (channel) => `✅ Protected link berhasil dibuat di ${channel}!`,
+        LINK_UPDATED: '✅ Protected link berhasil diupdate!',
+        LINK_DELETED: '✅ Protected link berhasil dihapus!',
+        PASSWORD_CORRECT: '✅ Password benar! Berikut adalah konten rahasia:',
     },
 
     PERMISSION: {
@@ -74,6 +89,20 @@ export const MESSAGES = {
         ERROR_NO_PERMISSION: 'Bot tidak memiliki permission untuk mengirim pesan di channel tersebut!',
     },
 
+    PROTECTED_LINK: {
+        MODAL_PASSWORD_TITLE: 'Masukkan Password',
+        MODAL_PASSWORD_LABEL: 'Password',
+        MODAL_PASSWORD_PLACEHOLDER: 'Masukkan Password Konten',
+        
+        MODAL_SECRET_TITLE: 'Pesan Rahasia',
+        MODAL_SECRET_LABEL: 'Konten Rahasia',
+        MODAL_SECRET_PLACEHOLDER: 'Masukkan konten utamanya!',
+
+        SECRET_EMBED_TITLE: 'Access Granted',
+        SECRET_EMBED_DESCRIPTION: (title) => `**${title}**`,
+        SECRET_EMBED_FOOTER: '© Devnest',
+    },
+
     LOGGER: {
         VERIFICATION_SUCCESS: (userTag) => `${userTag} telah diverifikasi`,
         SETUP_SUCCESS: (channelName, userTag) => `Embed verifikasi berhasil dikirim ke #${channelName} oleh ${userTag}`,
@@ -86,6 +115,13 @@ export const MESSAGES = {
         
         // Send Message Logs
         MESSAGE_SENT: (userTag, channelName, isEmbed) => `Pesan ${isEmbed ? 'embed' : 'biasa'} dikirim ke #${channelName} oleh ${userTag}`,
+
+        // Protected Link Logs
+        LINK_CREATED: (userTag, channelName, title) => `Protected link "${title}" dibuat di #${channelName} oleh ${userTag}`,
+        LINK_UPDATED: (userTag, messageId) => `Protected link ${messageId} diupdate oleh ${userTag}`,
+        LINK_DELETED: (userTag, messageId) => `Protected link ${messageId} dihapus oleh ${userTag}`,
+        LINK_ACCESSED: (userTag, title) => `${userTag} berhasil mengakses protected link "${title}"`,
+        LINK_ACCESS_FAILED: (userTag, title) => `${userTag} gagal mengakses protected link "${title}" (password salah)`,
     }
 };
 

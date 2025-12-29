@@ -6,6 +6,7 @@ import logger from './src/utils/logger.js';
 import shutdownHandler from './src/utils/shutdown.js';
 import rateLimiter from './src/utils/rateLimit.js';
 import ticketManager from './src/utils/ticketManager.js';
+import linkManager from './src/utils/linkManager.js';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ const client = new Client({
 client.commands = new Collection();
 client.rateLimiter = rateLimiter;
 client.ticketManager = ticketManager;
+client.linkManager = linkManager;
 
 async function initialize() {
     try {
@@ -49,6 +51,10 @@ async function initialize() {
         shutdownHandler.registerTask(async () => {
             rateLimiter.clearLimits();
         }, 'Cleanup Rate Limiter');
+
+        shutdownHandler.registerTask(async () => {
+            linkManager.saveLinks();
+        }, 'Save Protected Links');
 
         await client.login(process.env.DISCORD_TOKEN);
 
