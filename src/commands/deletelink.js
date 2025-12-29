@@ -41,26 +41,26 @@ export default {
 
             const embed = new EmbedBuilder()
                 .setColor(0xff0000)
-                .setTitle('⚠️ Konfirmasi Hapus Protected Link')
+                .setTitle('Konfirmasi Penghapusan')
                 .setDescription(
-                    `Apakah Anda yakin ingin menghapus protected link ini?\n\n` +
+                    `Apakah Anda yakin ingin menghapus link ini?\n\n` +
                     `**Title:** ${link.embedTitle}\n` +
                     `**Channel:** <#${link.channelId}>\n` +
                     `**Akses:** ${link.accessCount}x\n` +
                     `**Created:** <t:${Math.floor(link.createdAt / 1000)}:R>\n\n` +
-                    `⚠️ **Peringatan:** Aksi ini tidak bisa dibatalkan!\n` +
+                    `**Peringatan:** Aksi ini tidak bisa dibatalkan!\n` +
                     `Message embed di channel juga akan dihapus.`
                 )
                 .setTimestamp();
 
             const confirmButton = new ButtonBuilder()
                 .setCustomId(`confirm_delete_${messageId}`)
-                .setLabel('✅ Ya, Hapus')
+                .setLabel('Ya, Hapus')
                 .setStyle(ButtonStyle.Danger);
 
             const cancelButton = new ButtonBuilder()
                 .setCustomId(`cancel_delete_${messageId}`)
-                .setLabel('❌ Batal')
+                .setLabel('Batal')
                 .setStyle(ButtonStyle.Secondary);
 
             const row = new ActionRowBuilder()

@@ -86,7 +86,7 @@ export default {
                 await handleCancelDelete(interaction);
             }
 
-            // DM Buttons for modal triggers
+            // Button triggers for modals (in server, not DM)
             if (interaction.customId.startsWith('show_secret_modal_')) {
                 await handleShowSecretModal(interaction);
             }
@@ -379,7 +379,7 @@ async function handleSendmsgModal(interaction) {
     }
 }
 
-// ========== PROTECTED LINK HANDLERS ==========
+// ========== PROTECTED LINK HANDLERS (FIXED) ==========
 
 async function handleSendlinkModalStep1(interaction) {
     try {
@@ -424,57 +424,17 @@ async function handleSendlinkModalStep1(interaction) {
         
         interaction.client.sendlinkData.delete(modalId);
 
-        const secretModal = new ModalBuilder()
-            .setCustomId(secretModalId)
-            .setTitle(MESSAGES.PROTECTED_LINK.MODAL_SECRET_TITLE);
-
-        const secretInput = new TextInputBuilder()
-            .setCustomId('secret_message')
-            .setLabel(MESSAGES.PROTECTED_LINK.MODAL_SECRET_LABEL)
-            .setPlaceholder(MESSAGES.PROTECTED_LINK.MODAL_SECRET_PLACEHOLDER)
-            .setStyle(TextInputStyle.Paragraph)
-            .setMinLength(10)
-            .setMaxLength(4000)
-            .setRequired(true);
-
-        const row = new ActionRowBuilder().addComponents(secretInput);
-        secretModal.addComponents(row);
-
-        await interaction.followUp({
-            content: '⏳ Lengkapi form kedua...',
-            ephemeral: true
-        });
-
         await interaction.editReply({
-            content: '✅ Step 1 selesai! Silakan isi form yang muncul.',
+            content: 'Step 1 selesai!\n\n**Langkah selanjutnya:**\nKlik tombol di bawah untuk melanjutkan',
+            components: [
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`show_secret_modal_${secretModalId}`)
+                        .setLabel('Isi Pesan Kontent')
+                        .setStyle(ButtonStyle.Primary)
+                )
+            ]
         });
-
-        setTimeout(async () => {
-            try {
-                await interaction.followUp({
-                    content: 'Silakan isi pesan rahasia:',
-                    ephemeral: true
-                });
-                
-                await interaction.user.send({
-                    content: 'Klik di sini untuk melanjutkan',
-                    components: [
-                        new ActionRowBuilder().addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`show_secret_modal_${secretModalId}`)
-                                .setLabel('📝 Isi Pesan Rahasia')
-                                .setStyle(ButtonStyle.Primary)
-                        )
-                    ]
-                });
-            } catch (dmError) {
-                await interaction.followUp({
-                    content: '❌ Gagal mengirim DM! Pastikan DM Anda terbuka.\n\nGunakan command `/sendlink` lagi.',
-                    ephemeral: true
-                });
-                interaction.client.sendlinkData.delete(secretModalId);
-            }
-        }, 1000);
 
         setTimeout(() => {
             if (interaction.client.sendlinkData) {
@@ -626,7 +586,7 @@ async function handleAccessLinkButton(interaction) {
             await interaction.reply({
                 content: '❌ Terjadi error!',
                 flags: MessageFlags.Ephemeral
-            });
+            }).catch(() => {});
         }
     }
 }
@@ -678,10 +638,12 @@ async function handlePasswordCheck(interaction) {
         if (interaction.deferred) {
             return await interaction.editReply({
                 content: '❌ Terjadi error saat verifikasi password!'
-            });
+            }).catch(() => {});
         }
     }
 }
+
+// ========== EDIT LINK HANDLERS (FIXED FOR DM) ==========
 
 async function handleEditlinkModal(interaction) {
     try {
@@ -726,53 +688,18 @@ async function handleEditlinkModal(interaction) {
         
         interaction.client.editlinkData.delete(modalId);
 
-        const secretModal = new ModalBuilder()
-            .setCustomId(secretModalId)
-            .setTitle(MESSAGES.PROTECTED_LINK.MODAL_SECRET_TITLE);
-
-        const secretInput = new TextInputBuilder()
-            .setCustomId('secret_message')
-            .setLabel(MESSAGES.PROTECTED_LINK.MODAL_SECRET_LABEL)
-            .setPlaceholder('Kosongkan jika tidak ingin ubah pesan')
-            .setValue(data.originalData.secretMessage)
-            .setStyle(TextInputStyle.Paragraph)
-            .setMinLength(10)
-            .setMaxLength(4000)
-            .setRequired(true);
-
-        const row = new ActionRowBuilder().addComponents(secretInput);
-        secretModal.addComponents(row);
-
-        await interaction.followUp({
-            content: '⏳ Lengkapi form kedua...',
-            ephemeral: true
-        });
-
+        // PERBAIKAN: Tampilkan button di server, bukan kirim ke DM
         await interaction.editReply({
-            content: '✅ Step 1 selesai! Silakan isi form yang muncul.',
+            content: '✅ Step 1 selesai!\n\n**Langkah selanjutnya:**\nKlik tombol di bawah untuk melanjutkan edit pesan rahasia.',
+            components: [
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`show_editsecret_modal_${secretModalId}`)
+                        .setLabel('📝 Edit Pesan Rahasia')
+                        .setStyle(ButtonStyle.Primary)
+                )
+            ]
         });
-
-        setTimeout(async () => {
-            try {
-                await interaction.user.send({
-                    content: 'Klik di sini untuk melanjutkan edit:',
-                    components: [
-                        new ActionRowBuilder().addComponents(
-                            new ButtonBuilder()
-                                .setCustomId(`show_editsecret_modal_${secretModalId}`)
-                                .setLabel('📝 Edit Pesan Rahasia')
-                                .setStyle(ButtonStyle.Primary)
-                        )
-                    ]
-                });
-            } catch (dmError) {
-                await interaction.followUp({
-                    content: '❌ Gagal mengirim DM! Pastikan DM Anda terbuka.',
-                    ephemeral: true
-                });
-                interaction.client.editlinkData.delete(secretModalId);
-            }
-        }, 1000);
 
         setTimeout(() => {
             if (interaction.client.editlinkData) {
@@ -786,14 +713,23 @@ async function handleEditlinkModal(interaction) {
         if (interaction.deferred) {
             return await interaction.editReply({
                 content: MESSAGES.ERROR.LINK_UPDATE_FAILED
-            });
+            }).catch(() => {});
         }
     }
 }
 
 async function handleEditlinkSecretModal(interaction) {
     try {
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        // PERBAIKAN: Cek apakah dari DM atau server
+        const isDM = !interaction.guild;
+        
+        if (isDM) {
+            // Dari DM, jangan pakai ephemeral flag
+            await interaction.deferReply();
+        } else {
+            // Dari server, pakai ephemeral
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        }
 
         const modalId = interaction.customId;
         
@@ -808,6 +744,7 @@ async function handleEditlinkSecretModal(interaction) {
 
         const secretMessage = interaction.fields.getTextInputValue('secret_message');
 
+        // Update data link
         const updates = {
             embedTitle: data.embedTitle,
             embedDescription: data.embedDescription,
@@ -828,9 +765,10 @@ async function handleEditlinkSecretModal(interaction) {
             });
         }
 
-        const channel = interaction.client.channels.cache.get(result.data.channelId);
-        if (channel) {
-            try {
+        // Update message di channel
+        try {
+            const channel = interaction.client.channels.cache.get(result.data.channelId);
+            if (channel) {
                 const message = await channel.messages.fetch(data.messageId);
                 
                 const embed = new EmbedBuilder()
@@ -855,15 +793,15 @@ async function handleEditlinkSecretModal(interaction) {
                     embeds: [embed],
                     components: [row]
                 });
-            } catch (msgError) {
-                logger.warn('Failed to update message:', msgError);
+                
+                logger.success(MESSAGES.LOGGER.LINK_UPDATED(
+                    interaction.user.tag,
+                    data.messageId
+                ));
             }
+        } catch (msgError) {
+            logger.warn('Failed to update message:', msgError);
         }
-
-        logger.success(MESSAGES.LOGGER.LINK_UPDATED(
-            interaction.user.tag,
-            data.messageId
-        ));
 
         return await interaction.editReply({
             content: MESSAGES.SUCCESS.LINK_UPDATED
@@ -872,10 +810,99 @@ async function handleEditlinkSecretModal(interaction) {
     } catch (error) {
         logger.error('Editlink secret modal error:', error);
         
-        if (interaction.deferred) {
-            return await interaction.editReply({
-                content: MESSAGES.ERROR.LINK_UPDATE_FAILED
-            });
+        try {
+            if (interaction.deferred) {
+                return await interaction.editReply({
+                    content: MESSAGES.ERROR.LINK_UPDATE_FAILED
+                });
+            }
+        } catch (replyError) {
+            logger.error('Failed to send error reply:', replyError);
+        }
+    }
+}
+
+async function handleShowSecretModal(interaction) {
+    try {
+        const secretModalId = interaction.customId.replace('show_secret_modal_', '');
+        
+        if (!interaction.client.sendlinkData || !interaction.client.sendlinkData.has(secretModalId)) {
+            return await interaction.reply({
+                content: '❌ Data tidak ditemukan atau sudah expired!',
+                ephemeral: true
+            }).catch(() => {});
+        }
+
+        const secretModal = new ModalBuilder()
+            .setCustomId(secretModalId)
+            .setTitle(MESSAGES.PROTECTED_LINK.MODAL_SECRET_TITLE);
+
+        const secretInput = new TextInputBuilder()
+            .setCustomId('secret_message')
+            .setLabel(MESSAGES.PROTECTED_LINK.MODAL_SECRET_LABEL)
+            .setPlaceholder(MESSAGES.PROTECTED_LINK.MODAL_SECRET_PLACEHOLDER)
+            .setStyle(TextInputStyle.Paragraph)
+            .setMinLength(10)
+            .setMaxLength(4000)
+            .setRequired(true);
+
+        const row = new ActionRowBuilder().addComponents(secretInput);
+        secretModal.addComponents(row);
+
+        await interaction.showModal(secretModal);
+
+    } catch (error) {
+        logger.error('Show secret modal error:', error);
+        
+        if (!interaction.replied && !interaction.deferred) {
+            await interaction.reply({
+                content: '❌ Terjadi error!',
+                ephemeral: true
+            }).catch(() => {});
+        }
+    }
+}
+
+async function handleShowEditSecretModal(interaction) {
+    try {
+        const secretModalId = interaction.customId.replace('show_editsecret_modal_', '');
+        
+        if (!interaction.client.editlinkData || !interaction.client.editlinkData.has(secretModalId)) {
+            return await interaction.reply({
+                content: '❌ Data tidak ditemukan atau sudah expired!',
+                ephemeral: true
+            }).catch(() => {});
+        }
+
+        const data = interaction.client.editlinkData.get(secretModalId);
+
+        const secretModal = new ModalBuilder()
+            .setCustomId(secretModalId)
+            .setTitle(MESSAGES.PROTECTED_LINK.MODAL_SECRET_TITLE);
+
+        const secretInput = new TextInputBuilder()
+            .setCustomId('secret_message')
+            .setLabel(MESSAGES.PROTECTED_LINK.MODAL_SECRET_LABEL)
+            .setPlaceholder('Edit pesan rahasia')
+            .setValue(data.originalData.secretMessage)
+            .setStyle(TextInputStyle.Paragraph)
+            .setMinLength(10)
+            .setMaxLength(4000)
+            .setRequired(true);
+
+        const row = new ActionRowBuilder().addComponents(secretInput);
+        secretModal.addComponents(row);
+
+        await interaction.showModal(secretModal);
+
+    } catch (error) {
+        logger.error('Show edit secret modal error:', error);
+        
+        if (!interaction.replied && !interaction.deferred) {
+            await interaction.reply({
+                content: '❌ Terjadi error!',
+                ephemeral: true
+            }).catch(() => {});
         }
     }
 }
@@ -934,7 +961,7 @@ async function handleConfirmDelete(interaction) {
                 content: MESSAGES.ERROR.LINK_DELETE_FAILED,
                 embeds: [],
                 components: []
-            });
+            }).catch(() => {});
         }
     }
 }
@@ -951,90 +978,5 @@ async function handleCancelDelete(interaction) {
 
     } catch (error) {
         logger.error('Cancel delete error:', error);
-    }
-}
-
-async function handleShowSecretModal(interaction) {
-    try {
-        const secretModalId = interaction.customId.replace('show_secret_modal_', '');
-        
-        if (!interaction.client.sendlinkData || !interaction.client.sendlinkData.has(secretModalId)) {
-            return await interaction.reply({
-                content: '❌ Data tidak ditemukan atau sudah expired!',
-                ephemeral: true
-            });
-        }
-
-        const secretModal = new ModalBuilder()
-            .setCustomId(secretModalId)
-            .setTitle(MESSAGES.PROTECTED_LINK.MODAL_SECRET_TITLE);
-
-        const secretInput = new TextInputBuilder()
-            .setCustomId('secret_message')
-            .setLabel(MESSAGES.PROTECTED_LINK.MODAL_SECRET_LABEL)
-            .setPlaceholder(MESSAGES.PROTECTED_LINK.MODAL_SECRET_PLACEHOLDER)
-            .setStyle(TextInputStyle.Paragraph)
-            .setMinLength(10)
-            .setMaxLength(4000)
-            .setRequired(true);
-
-        const row = new ActionRowBuilder().addComponents(secretInput);
-        secretModal.addComponents(row);
-
-        await interaction.showModal(secretModal);
-
-    } catch (error) {
-        logger.error('Show secret modal error:', error);
-        
-        if (!interaction.replied && !interaction.deferred) {
-            await interaction.reply({
-                content: '❌ Terjadi error!',
-                ephemeral: true
-            });
-        }
-    }
-}
-
-async function handleShowEditSecretModal(interaction) {
-    try {
-        const secretModalId = interaction.customId.replace('show_editsecret_modal_', '');
-        
-        if (!interaction.client.editlinkData || !interaction.client.editlinkData.has(secretModalId)) {
-            return await interaction.reply({
-                content: '❌ Data tidak ditemukan atau sudah expired!',
-                ephemeral: true
-            });
-        }
-
-        const data = interaction.client.editlinkData.get(secretModalId);
-
-        const secretModal = new ModalBuilder()
-            .setCustomId(secretModalId)
-            .setTitle(MESSAGES.PROTECTED_LINK.MODAL_SECRET_TITLE);
-
-        const secretInput = new TextInputBuilder()
-            .setCustomId('secret_message')
-            .setLabel(MESSAGES.PROTECTED_LINK.MODAL_SECRET_LABEL)
-            .setPlaceholder('Kosongkan jika tidak ingin ubah pesan')
-            .setValue(data.originalData.secretMessage)
-            .setStyle(TextInputStyle.Paragraph)
-            .setMinLength(10)
-            .setMaxLength(4000)
-            .setRequired(true);
-
-        const row = new ActionRowBuilder().addComponents(secretInput);
-        secretModal.addComponents(row);
-
-        await interaction.showModal(secretModal);
-
-    } catch (error) {
-        logger.error('Show edit secret modal error:', error);
-        
-        if (!interaction.replied && !interaction.deferred) {
-            await interaction.reply({
-                content: '❌ Terjadi error!',
-                ephemeral: true
-            });
-        }
     }
 }
