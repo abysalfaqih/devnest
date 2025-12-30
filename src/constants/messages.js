@@ -40,10 +40,10 @@ export const MESSAGES = {
         TICKET_CREATED: (channel) => `Ticket berhasil dibuat! ${channel}`,
 
         // Protected Link Success
-        LINK_CREATED: (channel) => `✅ Protected link berhasil dibuat di ${channel}!`,
-        LINK_UPDATED: '✅ Protected link berhasil diupdate!',
-        LINK_DELETED: '✅ Protected link berhasil dihapus!',
-        PASSWORD_CORRECT: '✅ Password benar! Berikut adalah konten rahasia:',
+        LINK_CREATED: (channel) => `✓ Protected link berhasil dibuat di ${channel}!`,
+        LINK_UPDATED: '✓ Protected link berhasil diupdate!',
+        LINK_DELETED: '✓ Protected link berhasil dihapus!',
+        PASSWORD_CORRECT: '✓ Password benar! Berikut adalah konten rahasia:',
     },
 
     PERMISSION: {

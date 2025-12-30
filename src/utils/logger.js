@@ -1,16 +1,16 @@
 const logger = {
     info: (message) => {
-        console.log(`[INFO] [${new Date().toLocaleString()}] ${message}`);
+        console.log(`[INFO] ${message}`);
     },
     error: (message, error = null) => {
-        console.error(`[ERROR] [${new Date().toLocaleString()}] ${message}`);
+        console.error(`[ERROR] ${message}`);
         if (error) console.error(error);
     },
     success: (message) => {
-        console.log(`[SUCCESS] [${new Date().toLocaleString()}] ${message}`);
+        console.log(`[SUCCESS] ${message}`);
     },
     warn: (message) => {
-        console.warn(`[WARN] [${new Date().toLocaleString()}] ${message}`);
+        console.warn(`[WARN] ${message}`);
     }
 };
 

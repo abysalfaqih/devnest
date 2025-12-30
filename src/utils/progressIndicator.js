@@ -8,7 +8,7 @@ import { MessageFlags } from 'discord.js';
 export const PROGRESS_EMOJIS = {
     LOADING: '⏳',
     PROCESSING: '🔄',
-    SUCCESS: '✅',
+    SUCCESS: '✓',
     ERROR: '❌',
     WARNING: '⚠️',
     INFO: 'ℹ️'
