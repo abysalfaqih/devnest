@@ -1,1 +1,81 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Instrument Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Palet mentah: sama di semua tema. Dipakai untuk logo dan panel iklan. */
+  --color-moss: #1d4a33;
+  --color-lichen: #ebf0e6;
+  --color-marigold: #f2b21f;
+  --color-peat: #15251c;
+}
+
+/* Token semantik: nilainya berganti mengikuti tema. */
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-on-brand: var(--on-brand);
+  --color-signal: var(--signal);
+  --color-on-signal: var(--on-signal);
+}
+
+:root {
+  color-scheme: light;
+  --ground: #ebf0e6;
+  --surface: #f7f9f3;
+  --ink: #15251c;
+  --muted: #4b5e54;
+  --line: #cfd8c8;
+  --brand: #1d4a33;
+  --on-brand: #ebf0e6;
+  --signal: #f2b21f;
+  --on-signal: #15251c;
+  --focus: #1d4a33;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --ground: #0e1812;
+    --surface: #16231b;
+    --ink: #e7efe3;
+    --muted: #9bafa2;
+    --line: #26382c;
+    --brand: #8ed3a9;
+    --on-brand: #0e1812;
+    --focus: #f2b21f;
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--ground);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: var(--signal);
+    color: var(--on-signal);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}

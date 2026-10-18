@@ -1,13 +1,13 @@
 # Devnest: Progress dan Keputusan
 
-Terakhir diperbarui: 2026-10-17
+Terakhir diperbarui: 2026-10-18
 
 Tempel isi file ini di awal chat baru agar mentor langsung tahu posisi kita.
 
 ## Status fase
 
 - [x] Fase 0: Persiapan (tools, akun, repo, lint, env, CI)
-- [ ] Fase 1: Design system + layout dengan data contoh
+- [x] Fase 1: Design system + layout dengan data contoh (beranda, banner, daftar aplikasi)
 - [ ] Fase 2: Skema database + migrasi + seed
 - [ ] Fase 3: Auth admin + shell halaman admin
 - [ ] Fase 4: Admin manage aplikasi
