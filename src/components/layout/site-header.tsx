@@ -12,7 +12,7 @@ export function SiteHeader() {
           aria-label={`${siteConfig.name}, ke beranda`}
           className="flex items-center gap-2.5"
         >
-          <LogoMark className="size-8" />
+          <LogoMark className="size-8 rounded-[22%] ring-1 ring-ink/15" />
           <span className="font-display text-xl font-bold tracking-tight">{siteConfig.name}</span>
         </Link>
 

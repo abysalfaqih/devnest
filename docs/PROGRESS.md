@@ -40,6 +40,9 @@ Tempel isi file ini di awal chat baru agar mentor langsung tahu posisi kita.
 - `src/server`: kode yang hanya boleh jalan di server (wajib `import "server-only"`).
 - Rahasia hanya di `.env.local` dan dashboard Vercel, tidak pernah di git.
 
+- Logo: huruf "d" putih dengan titik hijau (#01EA75) di kotak gelap (#141414), dilacak dari JPG asli menjadi vektor di `src/components/layout/logo.tsx`. Favicon dan ikon iPhone dibuat dari jalur yang sama lewat `src/app/icon.tsx` dan `src/app/apple-icon.tsx`. Palet situs tidak berubah.
+- Logo asli (JPG 960x960) ada di `docs/brand/`. Jika desainer punya file vektor (SVG, AI, atau Figma), ganti `LOGO_PATH` agar lebih presisi.
+
 ## Catatan operasional
 
 - Vercel Hobby hanya untuk non-komersial (donasi dan iklan berbayar dihitung komersial). Cron Hobby maksimal sekali sehari.
