@@ -1,11 +1,11 @@
 import type { AppSummary } from "../types";
-import { AppRow } from "./app-row";
+import { AppTile } from "./app-tile";
 
 export function AppList({ apps }: { apps: AppSummary[] }) {
   return (
-    <ul className="grid gap-x-12 border-b border-line md:grid-cols-2">
+    <ul className="-mx-2 grid grid-cols-3 gap-y-1 md:grid-cols-6">
       {apps.map((app) => (
-        <AppRow key={app.id} app={app} />
+        <AppTile key={app.id} app={app} />
       ))}
     </ul>
   );

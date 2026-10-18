@@ -36,14 +36,12 @@ export function AppIcon({ name, iconUrl, className }: AppIconProps) {
   return (
     <span
       aria-hidden="true"
-      className={cn(
-        shape,
-        "grid place-items-center font-display text-3xl font-bold select-none",
-        className,
-      )}
+      className={cn(shape, "@container grid place-items-center select-none", className)}
       style={tone}
     >
-      {name.charAt(0).toUpperCase()}
+      <span className="font-display text-[42cqw] leading-none font-bold">
+        {name.charAt(0).toUpperCase()}
+      </span>
     </span>
   );
 }
