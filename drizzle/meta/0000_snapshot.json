@@ -1,0 +1,933 @@
+{
+  "id": "01ad7d25-78a8-4f30-bd8c-145523c83fed",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.ad_banners": {
+      "name": "ad_banners",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subtitle": {
+          "name": "subtitle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_public_id": {
+          "name": "image_public_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image_alt": {
+          "name": "image_alt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "target_url": {
+          "name": "target_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tone": {
+          "name": "tone",
+          "type": "ad_tone",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'moss'"
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "ad_banners_active_order_idx": {
+          "name": "ad_banners_active_order_idx",
+          "columns": [
+            {
+              "expression": "is_active",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "sort_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "ad_banners_title_len": {
+          "name": "ad_banners_title_len",
+          "value": "char_length(\"ad_banners\".\"title\") between 1 and 80"
+        },
+        "ad_banners_subtitle_len": {
+          "name": "ad_banners_subtitle_len",
+          "value": "\"ad_banners\".\"subtitle\" is null or char_length(\"ad_banners\".\"subtitle\") <= 160"
+        },
+        "ad_banners_image_alt_len": {
+          "name": "ad_banners_image_alt_len",
+          "value": "char_length(\"ad_banners\".\"image_alt\") <= 160"
+        },
+        "ad_banners_target_valid": {
+          "name": "ad_banners_target_valid",
+          "value": "char_length(\"ad_banners\".\"target_url\") <= 2048 and (\"ad_banners\".\"target_url\" ~ '^https://[^/@[:space:]]+([/?#][^[:space:]]*)?$' or \"ad_banners\".\"target_url\" ~ '^/([^/[:space:]][^[:space:]]*)?$')"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.app_download_links": {
+      "name": "app_download_links",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "app_id": {
+          "name": "app_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "app_download_links_app_id_apps_id_fk": {
+          "name": "app_download_links_app_id_apps_id_fk",
+          "tableFrom": "app_download_links",
+          "tableTo": "apps",
+          "columnsFrom": [
+            "app_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "app_download_links_app_position_key": {
+          "name": "app_download_links_app_position_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "app_id",
+            "position"
+          ]
+        },
+        "app_download_links_id_app_key": {
+          "name": "app_download_links_id_app_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "id",
+            "app_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "app_download_links_position_range": {
+          "name": "app_download_links_position_range",
+          "value": "\"app_download_links\".\"position\" between 0 and 2"
+        },
+        "app_download_links_label_len": {
+          "name": "app_download_links_label_len",
+          "value": "char_length(\"app_download_links\".\"label\") between 1 and 40"
+        },
+        "app_download_links_url_valid": {
+          "name": "app_download_links_url_valid",
+          "value": "char_length(\"app_download_links\".\"url\") <= 2048 and \"app_download_links\".\"url\" ~ '^https://[^/@[:space:]]+([/?#][^[:space:]]*)?$'"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.app_recommendations": {
+      "name": "app_recommendations",
+      "schema": "",
+      "columns": {
+        "app_id": {
+          "name": "app_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recommended_app_id": {
+          "name": "recommended_app_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "app_recommendations_app_id_apps_id_fk": {
+          "name": "app_recommendations_app_id_apps_id_fk",
+          "tableFrom": "app_recommendations",
+          "tableTo": "apps",
+          "columnsFrom": [
+            "app_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "app_recommendations_recommended_app_id_apps_id_fk": {
+          "name": "app_recommendations_recommended_app_id_apps_id_fk",
+          "tableFrom": "app_recommendations",
+          "tableTo": "apps",
+          "columnsFrom": [
+            "recommended_app_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "app_recommendations_pkey": {
+          "name": "app_recommendations_pkey",
+          "columns": [
+            "app_id",
+            "position"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "app_recommendations_app_target_key": {
+          "name": "app_recommendations_app_target_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "app_id",
+            "recommended_app_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "app_recommendations_position_range": {
+          "name": "app_recommendations_position_range",
+          "value": "\"app_recommendations\".\"position\" between 0 and 2"
+        },
+        "app_recommendations_not_self": {
+          "name": "app_recommendations_not_self",
+          "value": "\"app_recommendations\".\"app_id\" <> \"app_recommendations\".\"recommended_app_id\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.app_screenshots": {
+      "name": "app_screenshots",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "app_id": {
+          "name": "app_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "position": {
+          "name": "position",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "public_id": {
+          "name": "public_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "width": {
+          "name": "width",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "height": {
+          "name": "height",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "app_screenshots_app_id_apps_id_fk": {
+          "name": "app_screenshots_app_id_apps_id_fk",
+          "tableFrom": "app_screenshots",
+          "tableTo": "apps",
+          "columnsFrom": [
+            "app_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "app_screenshots_app_position_key": {
+          "name": "app_screenshots_app_position_key",
+          "nullsNotDistinct": false,
+          "columns": [
+            "app_id",
+            "position"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "app_screenshots_position_range": {
+          "name": "app_screenshots_position_range",
+          "value": "\"app_screenshots\".\"position\" between 0 and 7"
+        },
+        "app_screenshots_size_positive": {
+          "name": "app_screenshots_size_positive",
+          "value": "\"app_screenshots\".\"width\" > 0 and \"app_screenshots\".\"height\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.apps": {
+      "name": "apps",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "summary": {
+          "name": "summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "version": {
+          "name": "version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "size": {
+          "name": "size",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checksum_sha256": {
+          "name": "checksum_sha256",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "icon_url": {
+          "name": "icon_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "icon_public_id": {
+          "name": "icon_public_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "app_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'draft'"
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "apps_slug_key": {
+          "name": "apps_slug_key",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "apps_published_idx": {
+          "name": "apps_published_idx",
+          "columns": [
+            {
+              "expression": "published_at",
+              "isExpression": false,
+              "asc": false,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"apps\".\"status\" = 'published' and \"apps\".\"deleted_at\" is null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "apps_slug_format": {
+          "name": "apps_slug_format",
+          "value": "\"apps\".\"slug\" ~ '^[a-z0-9]+(-[a-z0-9]+)*$' and char_length(\"apps\".\"slug\") <= 80"
+        },
+        "apps_name_len": {
+          "name": "apps_name_len",
+          "value": "char_length(\"apps\".\"name\") between 1 and 60"
+        },
+        "apps_summary_len": {
+          "name": "apps_summary_len",
+          "value": "char_length(\"apps\".\"summary\") between 1 and 140"
+        },
+        "apps_description_len": {
+          "name": "apps_description_len",
+          "value": "char_length(\"apps\".\"description\") <= 20000"
+        },
+        "apps_version_len": {
+          "name": "apps_version_len",
+          "value": "char_length(\"apps\".\"version\") between 1 and 32"
+        },
+        "apps_size_len": {
+          "name": "apps_size_len",
+          "value": "char_length(\"apps\".\"size\") between 1 and 32"
+        },
+        "apps_checksum_format": {
+          "name": "apps_checksum_format",
+          "value": "\"apps\".\"checksum_sha256\" is null or \"apps\".\"checksum_sha256\" ~ '^[a-f0-9]{64}$'"
+        },
+        "apps_published_has_date": {
+          "name": "apps_published_has_date",
+          "value": "\"apps\".\"status\" <> 'published' or \"apps\".\"published_at\" is not null"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.admin_audit_logs": {
+      "name": "admin_audit_logs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "actor_id": {
+          "name": "actor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "entity_type": {
+          "name": "entity_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "entity_id": {
+          "name": "entity_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "meta": {
+          "name": "meta",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "admin_audit_logs_created_idx": {
+          "name": "admin_audit_logs_created_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": false,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "admin_audit_logs_action_len": {
+          "name": "admin_audit_logs_action_len",
+          "value": "char_length(\"admin_audit_logs\".\"action\") between 1 and 60"
+        },
+        "admin_audit_logs_entity_type_len": {
+          "name": "admin_audit_logs_entity_type_len",
+          "value": "char_length(\"admin_audit_logs\".\"entity_type\") between 1 and 40"
+        },
+        "admin_audit_logs_meta_size": {
+          "name": "admin_audit_logs_meta_size",
+          "value": "pg_column_size(\"admin_audit_logs\".\"meta\") <= 8192"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.download_sessions": {
+      "name": "download_sessions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "token_hash": {
+          "name": "token_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "app_id": {
+          "name": "app_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "link_id": {
+          "name": "link_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "step": {
+          "name": "step",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "step_started_at": {
+          "name": "step_started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ip_hash": {
+          "name": "ip_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "download_sessions_token_hash_key": {
+          "name": "download_sessions_token_hash_key",
+          "columns": [
+            {
+              "expression": "token_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "download_sessions_expires_idx": {
+          "name": "download_sessions_expires_idx",
+          "columns": [
+            {
+              "expression": "expires_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "download_sessions_app_idx": {
+          "name": "download_sessions_app_idx",
+          "columns": [
+            {
+              "expression": "app_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "download_sessions_link_app_fk": {
+          "name": "download_sessions_link_app_fk",
+          "tableFrom": "download_sessions",
+          "tableTo": "app_download_links",
+          "columnsFrom": [
+            "link_id",
+            "app_id"
+          ],
+          "columnsTo": [
+            "id",
+            "app_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "download_sessions_token_format": {
+          "name": "download_sessions_token_format",
+          "value": "\"download_sessions\".\"token_hash\" ~ '^[a-f0-9]{64}$'"
+        },
+        "download_sessions_step_range": {
+          "name": "download_sessions_step_range",
+          "value": "\"download_sessions\".\"step\" between 1 and 3"
+        },
+        "download_sessions_completed_at_last_step": {
+          "name": "download_sessions_completed_at_last_step",
+          "value": "\"download_sessions\".\"completed_at\" is null or \"download_sessions\".\"step\" = 3"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.legal_pages": {
+      "name": "legal_pages",
+      "schema": "",
+      "columns": {
+        "slug": {
+          "name": "slug",
+          "type": "legal_slug",
+          "typeSchema": "public",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "content_md": {
+          "name": "content_md",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "updated_by": {
+          "name": "updated_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "legal_pages_title_len": {
+          "name": "legal_pages_title_len",
+          "value": "char_length(\"legal_pages\".\"title\") between 1 and 120"
+        },
+        "legal_pages_content_len": {
+          "name": "legal_pages_content_len",
+          "value": "char_length(\"legal_pages\".\"content_md\") <= 100000"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.ad_tone": {
+      "name": "ad_tone",
+      "schema": "public",
+      "values": [
+        "moss",
+        "marigold",
+        "ink"
+      ]
+    },
+    "public.app_status": {
+      "name": "app_status",
+      "schema": "public",
+      "values": [
+        "draft",
+        "published"
+      ]
+    },
+    "public.legal_slug": {
+      "name": "legal_slug",
+      "schema": "public",
+      "values": [
+        "terms",
+        "privacy",
+        "disclaimer"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

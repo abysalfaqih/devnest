@@ -19,6 +19,10 @@ jobs:
     env:
       HUSKY: "0"
       NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      # Nilai palsu agar build lolos validasi env. Tidak ada koneksi nyata saat build.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      SUPABASE_URL: https://ci.supabase.co
+      SUPABASE_PUBLISHABLE_KEY: sb_publishable_placeholder_for_ci_0000
     steps:
       - uses: actions/checkout@v7
         with:
