@@ -1,6 +1,7 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { serverEnv } from "../env";
 import { authCookieOptions } from "./cookies";
 
@@ -9,6 +10,11 @@ import { authCookieOptions } from "./cookies";
  * di setiap request. Hanya dipakai untuk autentikasi; semua data lewat Drizzle.
  */
 export async function createSupabaseServerClient() {
+  // Klien Supabase memanggil Date.now() saat dibuat. Dengan Cache Components itu
+  // dilarang selama prerender (termasuk runtime prerender di mode dev), jadi
+  // pastikan kode setelah ini hanya berjalan pada request sungguhan.
+  await connection();
+
   const cookieStore = await cookies();
 
   return createServerClient(serverEnv.SUPABASE_URL, serverEnv.SUPABASE_PUBLISHABLE_KEY, {

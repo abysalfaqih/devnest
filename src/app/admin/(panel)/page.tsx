@@ -6,6 +6,10 @@ import { requireAdmin } from "@/server/auth/session";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
+// Membaca sesi pada setiap request, jadi tidak bisa dirender lebih dulu dan tidak perlu
+// navigasi instan. Tanpa baris ini Next.js 16 mencatat galat "uncached data" di mode dev.
+export const instant = false;
+
 export default async function AdminDashboardPage() {
   const admin = await requireAdmin();
 

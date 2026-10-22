@@ -8,6 +8,10 @@ import { VerifyForm } from "./verify-form";
 
 export const metadata: Metadata = { title: "Verifikasi dua langkah" };
 
+// Membaca sesi pada setiap request, jadi tidak bisa dirender lebih dulu dan tidak perlu
+// navigasi instan. Tanpa baris ini Next.js 16 mencatat galat "uncached data" di mode dev.
+export const instant = false;
+
 export default async function MfaPage() {
   const state = await getAdminState();
   if (state.status === "anonymous" || state.status === "not-admin") redirect("/admin/login");

@@ -30,6 +30,7 @@ Tempel isi file ini di awal chat baru agar mentor langsung tahu posisi kita.
 - Database Supabase (Postgres), gambar Cloudinary, rate limit Upstash Redis, hosting Vercel.
 - Bahasa situs: Indonesia (`lang="id"`).
 - Semua versi dependency dikunci eksak. Pembaruan lewat Dependabot dan ditinjau manual.
+- Aturan Cache Components untuk panel admin: (1) `createSupabaseServerClient()` selalu diawali `await connection()` karena klien Supabase memakai `Date.now()`; (2) setiap halaman atau layout yang membaca sesi (memanggil `requireAdmin()` atau `getAdminState()`) wajib `export const instant = false` (hanya berlaku untuk segmen yang mengekspornya); (3) pengujian e2e wajib dijalankan di mode dev DAN produksi. Halaman publik di Fase 5 TIDAK memakai `instant = false`; di sana datanya di-cache dengan `"use cache"` dan bagian dinamis dibungkus Suspense.
 
 ## Aturan struktur
 
