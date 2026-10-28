@@ -23,6 +23,7 @@ jobs:
       DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
       SUPABASE_URL: https://ci.supabase.co
       SUPABASE_PUBLISHABLE_KEY: sb_publishable_placeholder_for_ci_0000
+      CLOUDINARY_URL: cloudinary://000000000000000:ci_placeholder_secret@ci-placeholder
     steps:
       - uses: actions/checkout@v7
         with:

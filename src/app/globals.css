@@ -20,6 +20,7 @@
   --color-line: var(--line);
   --color-brand: var(--brand);
   --color-on-brand: var(--on-brand);
+  --color-danger: var(--danger);
   --color-signal: var(--signal);
   --color-on-signal: var(--on-signal);
 }
@@ -33,6 +34,7 @@
   --line: #cfd8c8;
   --brand: #1d4a33;
   --on-brand: #ebf0e6;
+  --danger: #a8261c;
   --signal: #f2b21f;
   --on-signal: #15251c;
   --focus: #1d4a33;
@@ -48,6 +50,7 @@
     --line: #26382c;
     --brand: #8ed3a9;
     --on-brand: #0e1812;
+    --danger: #ff9b8f;
     --focus: #f2b21f;
   }
 }

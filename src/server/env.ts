@@ -40,12 +40,20 @@ const serverEnvSchema = z.object({
       isNotSecretKey,
       "SUPABASE_PUBLISHABLE_KEY berisi kunci RAHASIA. Pakai kunci publishable.",
     ),
+  /** Cloudinary: salin "API Environment variable" dari dashboard (Settings, API Keys). */
+  CLOUDINARY_URL: z
+    .string()
+    .regex(
+      /^cloudinary:\/\/[^:\s]+:[^@\s]+@[^/?\s]+/,
+      "CLOUDINARY_URL harus berbentuk cloudinary://API_KEY:API_SECRET@CLOUD_NAME",
+    ),
 });
 
 const parsed = serverEnvSchema.safeParse({
   DATABASE_URL: process.env.DATABASE_URL,
   SUPABASE_URL: process.env.SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY: process.env.SUPABASE_PUBLISHABLE_KEY,
+  CLOUDINARY_URL: process.env.CLOUDINARY_URL,
 });
 
 if (!parsed.success) {

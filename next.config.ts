@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   poweredByHeader: false,
   reactStrictMode: true,
+  images: {
+    // Gambar disajikan langsung oleh CDN Cloudinary lewat loader kita.
+    loader: "custom",
+    loaderFile: "./src/lib/cloudinary-loader.ts",
+  },
   turbopack: {
     rules: {
       "*.css": {

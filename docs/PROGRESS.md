@@ -31,6 +31,11 @@ Tempel isi file ini di awal chat baru agar mentor langsung tahu posisi kita.
 - Bahasa situs: Indonesia (`lang="id"`).
 - Semua versi dependency dikunci eksak. Pembaruan lewat Dependabot dan ditinjau manual.
 - Aturan Cache Components untuk panel admin: (1) `createSupabaseServerClient()` selalu diawali `await connection()` karena klien Supabase memakai `Date.now()`; (2) setiap halaman atau layout yang membaca sesi (memanggil `requireAdmin()` atau `getAdminState()`) wajib `export const instant = false` (hanya berlaku untuk segmen yang mengekspornya); (3) pengujian e2e wajib dijalankan di mode dev DAN produksi. Halaman publik di Fase 5 TIDAK memakai `instant = false`; di sana datanya di-cache dengan `"use cache"` dan bagian dinamis dibungkus Suspense.
+- Gambar: diunggah langsung dari browser ke Cloudinary memakai tiket bertanda tangan (`src/server/cloudinary.ts`). public_id dibuat server (`devnest/icons/<uuid>`) dan ikut ditandatangani; format jpg/jpeg/png/webp (SVG ditolak). Saat menyimpan, server memverifikasi tanda tangan respons Cloudinary lalu membentuk URL sendiri; URL dari browser tidak pernah dipercaya. Gambar disajikan oleh CDN Cloudinary lewat `src/lib/cloudinary-loader.ts` (bukan optimasi gambar Vercel). Env: satu variabel `CLOUDINARY_URL` (mengandung API secret; Sensitive di Vercel).
+- Aplikasi: slug dibuat otomatis dari nama, unik (akhiran -2, -3, dst.), permanen, dan tidak dipakai ulang setelah dihapus (hapus lunak). Tombol unduh diperbarui per posisi agar ID tombol stabil. Setiap aksi memanggil `requireAdmin()`; setiap perubahan dicatat di audit (dalam transaksi yang sama). Logo lama dihapus dari Cloudinary hanya setelah database berhasil diperbarui.
+- Subquery berkorelasi di Drizzle: tulis nama tabel secara eksplisit. Drizzle membuang awalan tabel pada query satu-tabel (`${apps.id}` menjadi `"id"`).
+- Setiap aksi mutasi memanggil `revalidateCatalog()` (`updateTag("catalog")`). Halaman publik Fase 5 wajib memakai tag "catalog".
+- Belum ada: screenshot dan rekomendasi (Fase 4B), pemulihan aplikasi terhapus, pembersihan gambar yatim di Cloudinary (skrip di Fase 11), CSP (Fase 10 perlu: connect-src api.cloudinary.com; img-src res.cloudinary.com dan blob:).
 
 ## Aturan struktur
 

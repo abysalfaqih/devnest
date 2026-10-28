@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import { cn } from "@/lib/cn";
 
 /** Warna cadangan untuk aplikasi tanpa logo. Dipilih tetap berdasarkan nama. */
@@ -22,12 +25,25 @@ type AppIconProps = {
 };
 
 export function AppIcon({ name, iconUrl, className }: AppIconProps) {
+  // URL yang gagal dimuat (gambar dihapus, jaringan putus): tampilkan huruf pengganti.
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const shape = "relative block overflow-hidden rounded-[22%] ring-1 ring-inset ring-ink/15";
 
-  if (iconUrl) {
+  if (iconUrl && iconUrl !== failedUrl) {
     return (
       <span className={cn(shape, className)}>
-        <Image src={iconUrl} alt="" fill sizes="96px" className="object-cover" />
+        <Image
+          src={iconUrl}
+          alt=""
+          fill
+          sizes="96px"
+          className="object-cover"
+          onError={() => setFailedUrl(iconUrl)}
+          ref={(img) => {
+            // Galat bisa terjadi sebelum hidrasi, saat onError belum terpasang.
+            if (img?.complete && img.naturalWidth === 0) setFailedUrl(iconUrl);
+          }}
+        />
       </span>
     );
   }
